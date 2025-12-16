@@ -1,0 +1,54 @@
+$transmission_delay = 0.080
+#$theta_ref = -0.10 # adapted from 0.01
+#$desired_speed = 1.1
+
+CompositeController{
+	#Controller based on lua script
+	ScriptController {
+		steps_ignore_phase_locking = 3
+		phase_lock_gain = 0.5
+		number_synergies = 5
+		grf_threshold = 0.1
+		std_init = 0.01
+		script_file = "[00] controllers/scripts/ScriptControllerCPG-DiRusso.lua"
+	}
+	GaitStateController {
+		signature_postfix = "GH2010v8"
+		# stance_load_threshold = ~0.1<0.001,1>
+		stance_load_threshold = 0.1
+		leg_load_sensor_delay = 0
+		symmetric = 1
+		ConditionalControllers {
+			# Stance reflexes
+			ConditionalController {
+				states = "EarlyStance LateStance"
+				ReflexController {
+					DofReflex {
+						target = hamstrings
+						source = pelvis_tilt
+						delay = 0.005
+						P0 = 0~0.1<-0.5,0.5>
+						KP = 0.8~0.1<-10,10> 
+						KV = 0.5~0.1<-10,10> 
+					}
+					DofReflex {
+						target = glut_max
+						source = pelvis_tilt
+						delay = $transmission_delay
+						P0 = 0~0.1<-0.5,0.5>
+						KP = 0.2~0.1<-10,10> 
+						KV = 0.7~0.1<-10,10> 
+					}
+					DofReflex {
+						target = iliopsoas
+						source = pelvis_tilt
+						delay = $transmission_delay
+						P0 = 0~0.1<-0.5,0.5>
+						KP = -1.0~0.1<-10,10> 
+						KV = -1.0~0.1<-10,10> 
+					}
+				}
+			}
+		}
+	}
+}

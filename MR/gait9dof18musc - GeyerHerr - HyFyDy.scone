@@ -1,0 +1,53 @@
+#################################################################################################################
+# SCONE optimization to optimize the muscle-reflex controller, implemented by T. Geijtenbeek, with comparison
+# model.
+
+# Author: Menthy Denayer - menthy.denayer@vub.be
+#################################################################################################################
+
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	min_progress = 1e-5
+	init {file = "[04] parameters/GeyerHerr_gait9dof18musc_hyfydy_H0918v3_musclePaths-0.936.par" std_factor = 10 use_best_as_mean = 1}	
+	
+	SimulationObjective {
+		max_duration = 20
+		
+		
+		# Model used in simulation
+		ModelHyfydy {
+			include_dofs_in_state = 1
+			transition_velocity = 0.20
+			use_opensim_activation_dynamics = 1
+			zero_velocity_equilibration = 1
+			activation_rate = 100		# same as 
+			deactivation_rate = 25
+			model_file = "[03] models/gait9dof18musc-H0918v3-LimF-musclePaths.hfd"
+			
+			# Optimize initial state parameters
+			state_init_file = "[02] initializations/InitStateH0918Gait10ActA.zml"
+			initial_state_offset = 0~0.01<-0.5,0.5>
+			initial_state_offset_exclude = "*_tx*;*_ty*;*_u"
+			#initial_state_offset_exclude = "*_tx*"
+			initial_load = 1
+			fixed_control_step_size = 0.005
+			
+		}
+		
+		# Controller for gait
+		<< "[00] controllers/gait9dof18muscRS2v3.scone" >>
+		
+		# Measure for gait
+		CompositeMeasure {
+			<< "[01] measures/Gait10.scone" >>
+			<< "[01] measures/EffortWangCubed2000.scone" >>
+			<< "[01] measures/DofKnee1.scone" >>
+			<< "[01] measures/Grf14.scone" >> 
+			#<< "[01] measures/HeadStabilityMeasure.scone" >>
+			#<< "[01] measures/ToeClearanceMeasure.scone" >>
+			#<< "[01] measures/SlidingMeasure.scone" >>
+			#<< "[01] measures/TrackingMeasure.scone" >>
+			#<< "[01] measures/KneeFlexionMeasure.scone" >>
+		}
+	}
+}

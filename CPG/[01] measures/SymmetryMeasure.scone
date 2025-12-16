@@ -1,0 +1,9 @@
+# Measure for symmetry over 1 period
+ScriptMeasure{
+	script_file = "[01] measures/scripts/SymmetryMeasureScript.lua"
+	muscle_act_weight = 0  #?100
+	speed_weight = 0 #0.1
+	value_weight = 0 #0.01
+	com_limit = 0 # 0.5
+	failure_offset = 5
+}

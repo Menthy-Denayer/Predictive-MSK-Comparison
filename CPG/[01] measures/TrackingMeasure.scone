@@ -1,0 +1,15 @@
+# Measure for mimicking 2D gait
+MimicMeasure {
+	name = Mimic
+	weight = 500 # changed from 10000
+	include_states = "*/activation"
+	file = "[01] measures/data/GeyerHerrSolution.sto"
+	time_offset = 4.47 # stable time in Geyer & Herr solution
+	#include_states = "*/value;*/speed;*/activation"
+	#include_states = "*value;*/activation"
+	#include_states = "*value"
+	#stop_time = 10
+	#threshold = 0.01 # threshold below which the error becomes zero
+	#average_error_limit = 10 # above this error, the simulation is ended early
+	#activation_error_weight = 0.25 # weight applied to the activation measure
+}

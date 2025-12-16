@@ -1,0 +1,17 @@
+# Taken from Ong et al. (2019)
+BodyMeasure {
+	name = HeadStabilityY
+	weight = 0.25
+	body = torso
+	acceleration { min = -4.903325 max = 4.903325 squared_penalty = 1}
+	direction = [0 1 0]
+	offset = [0 0 0]
+}
+BodyMeasure {
+	name = HeadStabilityX
+	weight = 0.25
+	body = torso
+	acceleration { min = -2.4516625 max = 2.4516625 squared_penalty = 1}
+	direction = [1 0 0]
+	offset = [0 0 0]
+}

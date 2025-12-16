@@ -1,0 +1,8 @@
+# Measure for toe clearance (penalize product vertical GRF & horizontal foot velocity)
+ScriptMeasure {
+	name = Clearance
+	script_file = "[01] measures/scripts/ToeClearanceMeasureScript.lua"
+	weight = 0.5 # auto added, don't need to define in script!
+	velocity_threshold = 1.5
+	com_height_threshold = 0.05
+}

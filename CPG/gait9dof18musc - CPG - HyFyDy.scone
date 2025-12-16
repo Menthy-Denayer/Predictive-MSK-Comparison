@@ -1,0 +1,48 @@
+#################################################################################################################
+# SCONE optimization to optimize the central pattern generator controller, implemented by A. Di Russo, 
+# with comparison model
+
+# Author: Menthy Denayer - menthy.denayer@vub.be
+#################################################################################################################
+
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	
+	init {file = "[04] parameters/di_russo-CPG-HyFyDy-gait9dof18musc_H0918v3musclePaths-6.146.par" use_best_as_mean = true std_factor = 10}
+	
+	
+	SimulationObjective {
+		max_duration = 50
+		
+		# Model used in simulation
+		ModelHyfydy {
+			include_dofs_in_state = 1
+			transition_velocity = 0.20
+			use_opensim_activation_dynamics = 1
+			zero_velocity_equilibration = 1
+			activation_rate = 100	
+			deactivation_rate = 25
+			model_file = "[03] models/gait9dof18musc-H0918v3-LimF-musclePaths.hfd"
+			
+			# Optimize initial state parameters
+			state_init_file = "[02] initializations/InitStateH0918Gait_CPG.zml"
+			initial_load = 1
+			fixed_control_step_size = 0.001 # larger step sizes give better performance
+		}
+		
+		# Controller for gait
+		<< "[00] controllers/H0918v3-CPGController-DiRusso.scone" >>
+		
+		# Measure for gait (taken from Tutorial 4a)
+		CompositeMeasure {
+			<< "[01] measures/Gait10.scone" >>
+			<< "[01] measures/EffortWangCubed2000.scone" >>
+			<< "[01] measures/DofKnee1.scone" >>
+			<< "[01] measures/Grf14.scone" >>
+			#<< "[01] measures/HeadStabilityMeasure.scone" >>
+			#<< "[01] measures/TrackingMeasure.scone" >>
+			#<< "[01] measures/BalanceMeasure.scone" >>
+			#<< "[01] measures/ToeClearance.scone" >>
+		}
+	}
+}

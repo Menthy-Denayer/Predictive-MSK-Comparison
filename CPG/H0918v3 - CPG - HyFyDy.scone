@@ -1,0 +1,39 @@
+#################################################################################################################
+# SCONE optimization to optimize the central pattern generator controller, implemented by A. Di Russo, 
+# with H0918v3 model
+
+# Author: Menthy Denayer - menthy.denayer@vub.be
+#################################################################################################################
+
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	init {file = "[04] parameters/di_russo-CPG-HyFyDy-stable-5.857.par" use_best_as_mean = true}	
+	
+	
+	SimulationObjective {
+		max_duration = 50
+		
+		# Model used in simulation
+		ModelHyfydy {
+			model_file = "[03] models/H0918v3.hfd"
+			state_init_file = "[02] initializations/InitStateH0918Gait_CPG.zml"
+			
+			initial_load = 1
+			fixed_control_step_size = 0.001 # larger step sizes give better performance
+		}
+		
+		# Controller for gait
+		<< "[00] controllers/H0918v3-CPGController-DiRusso.scone" >>
+		
+		# Measure for gait (taken from Tutorial 4a)
+		CompositeMeasure {
+			<< "[01] measures/Gait10.scone" >>
+			<< "[01] measures/EffortWangCubed2000.scone" >>
+			<< "[01] measures/DofKnee1.scone" >>
+			<< "[01] measures/Grf14.scone" >>
+			#<< "[01] measures/TrackingMeasure.scone" >>
+			#<< "[01] measures/BalanceMeasure.scone" >>
+			<< "[01] measures/ToeClearance.scone" >>
+		}
+	}
+}

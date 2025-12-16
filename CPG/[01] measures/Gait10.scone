@@ -1,0 +1,17 @@
+$termination_height = 0.85
+
+GaitMeasure {
+	name = Gait
+	weight = 1 # changed from 100
+	#threshold = 0.05
+	termination_height = $termination_height
+	min_velocity = 1.0
+}
+
+# added similar to Di Russo et al. 2023
+ScriptMeasure {
+	name = Alive
+	weight = 10
+	script_file = "[01] measures/scripts/StayingAliveReward.lua"
+	termination_height = $termination_height
+}

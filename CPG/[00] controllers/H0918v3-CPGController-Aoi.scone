@@ -1,0 +1,91 @@
+$transmission_delay = 0.080
+$theta_ref = -0.10 # adapted from 0.01
+$desired_speed = 1.1
+
+CompositeController{
+	#Controller based on lua script
+	ScriptController {
+		desired_speed = $desired_speed
+		desired_period = 1.1
+		number_synergies = 5
+		maximum_weight = 1.5
+		grf_threshold = 10
+		std_init = 0.01
+		script_file = "controllers/ScriptControllerCPG.lua"
+	}
+	ScriptController{
+		grf_threshold = 10
+		script_file = "controllers/ScriptControllerReflex.lua"
+		ReflexController{
+			# torso stability
+			name = leftReflex
+			dual_sided = 0 # to differentiate left & right reflexes
+			symmetric = 1
+			DofReflex {
+				target = glut_max_l
+				source = pelvis_tilt
+				delay = $transmission_delay 				
+				KP = ~2.0<0,2> # changed gain
+				KV = ~0.40<0,1> # changed gain
+				P0 = $theta_ref # theta_ref, not optimized
+			}
+			DofReflex {
+				target = iliopsoas_l
+				source = pelvis_tilt
+				delay = $transmission_delay 
+				KP = ~-1<-2,0>
+				KV = ~-0.20<-1,0>
+				P0 = $theta_ref # theta_ref, not optimized
+			}
+			DofReflex{
+				target = soleus_l
+				source = pelvis_tx
+				delay = $transmission_delay
+				KV = ~0.04<-0.0,0.5>
+				V0 = $desired_speed
+			}
+			DofReflex{
+				target = tib_ant_l
+				source = pelvis_tx
+				delay = $transmission_delay
+				KV = ~-0.20<-0.5,0.0>
+				V0 = $desired_speed
+			}
+		}
+		ReflexController{
+			name = rightReflex
+			dual_sided = 0
+			symmetric = 1
+			DofReflex {
+				target = glut_max_r
+				source = pelvis_tilt
+				delay = $transmission_delay 
+				KP = leftReflex.glut_max-pelvis_tilt.KP
+				KV = leftReflex.glut_max-pelvis_tilt.KV
+				P0 = $theta_ref # theta_ref, not optimized
+			}
+			DofReflex {
+				target = iliopsoas_r
+				source = pelvis_tilt
+				delay = $transmission_delay 
+				KP = leftReflex.iliopsoas-pelvis_tilt.KP
+				KV = leftReflex.iliopsoas-pelvis_tilt.KV
+				P0 = $theta_ref # theta_ref, not optimized
+			}
+			DofReflex{
+				target = soleus_r
+				source = pelvis_tx
+				delay = $transmission_delay
+				KV = leftReflex.soleus-pelvis_tx.KV
+				V0 = $desired_speed
+			}
+			DofReflex{
+				target = tib_ant_r
+				source = pelvis_tx
+				delay = $transmission_delay
+				KV = leftReflex.tib_ant-pelvis_tx.KV
+				V0 = $desired_speed
+			}
+		}
+	}
+}

@@ -1,0 +1,38 @@
+#################################################################################################################
+# SCONE optimization to optimize the muscle-reflex controller, implemented by T. Geijtenbeek
+
+# Author: Thomas Geijtenbeek
+#################################################################################################################
+
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	min_progress = 1e-4
+	init { file = "[02] initializations/H0918GaitRS2Osim4.par" std_factor = 10 use_best_as_mean = 1 }
+	
+	SimulationObjective {
+		max_duration = 10
+		
+		# Model used in simulation
+		ModelOpenSim4 {
+			model_file ="[03] models/H0918v3.osim"
+			
+			# Optimize initial state parameters
+			state_init_file = "[02] initializations/InitStateH0918Gait10ActA.zml"
+			initial_state_offset = 0~0.01<-0.5,0.5>
+			initial_state_offset_exclude = "*_tx*;*_ty*;*_u;*/speed"
+			initial_load = 1
+			fixed_control_step_size = 0.005
+		}
+		
+		# Controller for gait
+		<< "[00] controllers/H0918RS2v3.scone" >>
+		
+		# Measure for gait
+		CompositeMeasure {
+			<< "[01] measures/Gait10.scone" >>
+			<< "[01] measures/EffortWangCubed2000.scone" >>
+			<< "[01] measures/DofKnee1.scone" >>
+			<< "[01] measures/Grf14.scone" >>
+		}
+	}
+}

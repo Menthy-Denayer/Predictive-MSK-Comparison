@@ -1,0 +1,8 @@
+# Measure for penalizing when knee flexion is too low during swing
+ScriptMeasure {
+	name = KneeFlexion
+	script_file = "[01] measures/scripts/KneeFlexionMeasureScript.lua"
+	weight = 1e-1 # auto added, don't need to define in script!
+	min_knee_flex = 60
+	time_offset = 2
+}

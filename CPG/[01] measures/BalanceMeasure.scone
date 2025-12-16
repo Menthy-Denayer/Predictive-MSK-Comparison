@@ -1,0 +1,6 @@
+# Measure for balance, checks if vertical COM position is maintained
+BalanceMeasure {
+	name = Balance
+	weight = 10 
+	termination_height = 0.5
+}
