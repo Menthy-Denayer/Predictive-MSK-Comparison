@@ -8,7 +8,7 @@
 CmaOptimizer {
 	signature_prefix = DATE_TIME
 	min_progress = 1e-5
-	init {file = "[04] parameters/GeyerHerr_gait9dof18musc_hyfydy_H0918v3_musclePaths-0.936.par" std_factor = 10 use_best_as_mean = 1}	
+	init {file = "[04] parameters/GeyerHerr_gait9dof18musc_hyfydy_H0918v3_musclePaths-0.959.par" std_factor = 10 use_best_as_mean = 1}	
 	
 	SimulationObjective {
 		max_duration = 20
