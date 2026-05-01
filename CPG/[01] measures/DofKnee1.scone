@@ -7,7 +7,7 @@ CompositeMeasure {
 		dof = ankle_angle
 		position { min = -60 max = 60 squared_penalty = 1 }
 	}
-	DofMeasure { # Unclear what this does? I think refers to limit force applied to knee
+	DofMeasure { 
 		weight = 0.02
 		threshold = 1
 		threshold_transition = 0.5
